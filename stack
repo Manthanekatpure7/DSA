@@ -1,0 +1,102 @@
+#include <iostream>
+#include <cctype>
+using namespace std;
+
+struct Node {
+char data;
+Node* next;
+};
+
+class Stack {
+Node* top;
+public:
+Stack() {
+top = NULL;
+}
+
+void push(char x) {
+Node* t = new Node;
+t->data = x;
+t->next = top;
+top = t;
+}
+
+char pop() {
+if (top == NULL) return '\0';
+char x = top->data;
+Node* t = top;
+top = top->next;
+delete t;
+return x;
+}
+
+char peek() {
+if (top != NULL) return top->data;
+else return '\0';
+}
+
+bool isEmpty() {
+return top == NULL;
+}
+};
+
+int precedence(char op) {
+if (op == '+' || op == '-') return 1;
+if (op == '*' || op == '/') return 2;
+return 0;
+}
+
+string infixToPostfix(string infix) {
+Stack s;
+string postfix = "";
+for (char ch : infix) {
+if (isalnum(ch)) {
+
+postfix += ch;
+}
+else if (ch == '(') {
+s.push(ch);
+}
+else if (ch == ')') {
+
+while (!s.isEmpty() &&s.peek() != '(')
+postfix += s.pop();
+s.pop();
+}
+else {
+while (!s.isEmpty() && precedence(ch) <= precedence(s.peek()))
+postfix += s.pop();
+s.push(ch);
+}
+}
+while (!s.isEmpty())
+postfix += s.pop();
+return postfix;
+}
+
+string infixToPrefix(string infix) {
+string rev = "";
+for (int i = infix.length() - 1; i>= 0; i--) {
+if (infix[i] == '(')
+rev += ')';
+else if (infix[i] == ')')
+rev += '(';
+else
+rev += infix[i];
+}
+
+string postfix = infixToPostfix(rev);
+string prefix = "";
+for (int i = postfix.length() - 1; i>= 0; i--) {
+prefix += postfix[i];
+}
+return prefix;
+}
+int main() {
+string infix;
+cout<< "Enter infix: ";
+cin>> infix;
+cout<< "Postfix: " <<infixToPostfix(infix) <<endl;
+cout<< "Prefix: " <<infixToPrefix(infix) <<endl;
+return 0;
+}
