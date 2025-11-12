@@ -1,0 +1,132 @@
+#include <iostream>
+#include <cstdlib>
+using namespace std;
+
+class Queue {
+    int *q;
+    int front, rear;
+    int count;
+    int size;
+
+public:
+    Queue(int size);
+    bool isFull();
+    bool isEmpty();
+    void enQueue(int item);
+    int deQueue();
+    int top();
+    void display();
+    void demo();
+    int menu();
+};
+
+Queue::Queue(int size) {
+    front = 0;
+    rear = -1;
+    count = 0;
+    this->size = size;
+    q = new int[size];
+}
+
+bool Queue::isFull() {
+    return (count == size);
+}
+
+bool Queue::isEmpty() {
+    return (count == 0);
+}
+
+void Queue::enQueue(int item) {
+    if (isFull()) {
+        cout << "Queue is full";
+        cout << "\nTerminating the program";
+        exit(-1);
+    }
+    rear = (rear + 1) % size;
+    q[rear] = item;
+    count++;
+}
+
+int Queue::deQueue() {
+    if (isEmpty()) {
+        cout << "Queue is empty";
+        cout << "\nTerminating the program";
+        exit(-1);
+    }
+    int item = q[front];
+    front = (front + 1) % size;
+    count--;
+    return item;
+}
+
+int Queue::top() {
+    if (isEmpty()) {
+        cout << "Queue is empty";
+        cout << "\nTerminating the program";
+        exit(-1);
+    }
+    return q[front];
+}
+
+void Queue::display() {
+    if (isEmpty()) {
+        cout << endl << "Empty Queue" << endl;
+    } else {
+        cout << "Front -> ";
+        for (int c = count, f = front; c > 0; f = (f + 1) % size, c--) {
+            cout << q[f] << " -> ";
+        }
+        cout << "Rear" << endl;
+    }
+}
+
+int Queue::menu() {
+    int ch;
+    cout << "\nEnter the choice:"
+         << "\n1: Add item to queue"
+         << "\n2: Delete item from queue"
+         << "\n3: Read item from queue"
+         << "\n4: Display queue"
+         << "\n5: Terminate program"
+         << "\nEnter your choice: ";
+    cin >> ch;
+    return ch;
+}
+
+void Queue::demo() {
+    int item;
+    while (true) {
+        switch (menu()) {
+        case 1:
+            cout << "\nEnter item to add in queue = ";
+            cin >> item;
+            enQueue(item);
+            cout << "\nQueue is: ";
+            display();
+            break;
+        case 2:
+            item = deQueue();
+            cout << "\nItem deleted = " << item << endl;
+            break;
+        case 3:
+            item = top();
+            cout << "\nItem at front = " << item << endl;
+            break;
+        case 4:
+            cout << "\nQueue is:\n";
+            display();
+            break;
+        case 5:
+            cout << "\nTerminating program...\n";
+            exit(0);
+        default:
+            cout << "\nInvalid choice. Try again.\n";
+        }
+    }
+}
+
+int main() {
+    Queue q(10);
+    q.demo();
+    return 0;
+}
